@@ -22,14 +22,12 @@ export function AuthProvider({ children }) {
       }
     );
 
-    // Initialize state
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
     setLoading(false);
 
-    // Cleanup interceptor on unmount
     return function () {
       axios.interceptors.request.eject(interceptor);
     };
