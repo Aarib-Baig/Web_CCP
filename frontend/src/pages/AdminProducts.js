@@ -5,7 +5,8 @@ import './AdminProducts.css';
 const CATEGORIES = ['Fruits', 'Vegetables'];
 const UNITS = [
   { value: 'kg', label: 'Kilogram (kg)' },
-  { value: 'bunch', label: 'Bunch' }
+  { value: 'bunch', label: 'Bunch' },
+  { value: 'dozen', label: 'Dozen' }
 ];
 
 function AdminProducts() {

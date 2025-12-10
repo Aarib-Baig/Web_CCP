@@ -19,7 +19,7 @@ const ProductSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ['kg', 'bunch']
+    enum: ['kg', 'bunch', 'dozen']
   },
   stockStatus: {
     type: Boolean,
