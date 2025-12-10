@@ -1,38 +1,71 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { CartContext } from '../context/CartContext';
 import './Home.css';
 
-const Home = () => {
+function Home() {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showInStockOnly, setShowInStockOnly] = useState(false);
   const [loading, setLoading] = useState(true);
+
   const { addToCart } = useContext(CartContext);
 
-  useEffect(() => {
+  useEffect(function () {
     axios.get('/api/products')
-      .then(res => { setProducts(res.data); setLoading(false); })
-      .catch(() => setLoading(false));
+      .then(function (response) {
+        setProducts(response.data);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        console.error('Error loading products:', error);
+        setLoading(false);
+      });
   }, []);
 
-  // Derive categories and filtered products using useMemo
-  const categories = useMemo(() =>
-    ['All', ...new Set(products.map(p => p.category))], [products]);
+  function getCategories() {
+    const categories = ['All'];
+    for (let i = 0; i < products.length; i++) {
+      if (!categories.includes(products[i].category)) {
+        categories.push(products[i].category);
+      }
+    }
+    return categories;
+  }
 
-  const filteredProducts = useMemo(() =>
-    products.filter(p =>
-      (selectedCategory === 'All' || p.category === selectedCategory) &&
-      (!showInStockOnly || p.stockStatus)
-    ), [products, selectedCategory, showInStockOnly]);
+  function getFilteredProducts() {
+    const filtered = [];
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i];
 
-  const handleAddToCart = (product) => {
-    if (!product.stockStatus) return alert('This product is out of stock');
+      if (selectedCategory !== 'All' && product.category !== selectedCategory) {
+        continue;
+      }
+
+      if (showInStockOnly && !product.stockStatus) {
+        continue;
+      }
+
+      filtered.push(product);
+    }
+    return filtered;
+  }
+
+  function handleAddToCart(product) {
+    if (!product.stockStatus) {
+      alert('This product is out of stock');
+      return;
+    }
     addToCart(product);
-    alert(`${product.name} added to cart!`);
-  };
+    alert(product.name + ' added to cart!');
+  }
 
-  if (loading) return <div className="loading">Loading products...</div>;
+  if (loading) {
+    return <div className="loading">Loading products...</div>;
+  }
+
+  const categories = getCategories();
+  const filteredProducts = getFilteredProducts();
 
   return (
     <div className="home">
@@ -44,13 +77,23 @@ const Home = () => {
       <div className="filters">
         <div className="filter-group">
           <label>Category:</label>
-          <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
-            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          <select
+            value={selectedCategory}
+            onChange={function (e) { setSelectedCategory(e.target.value); }}
+          >
+            {categories.map(function (category) {
+              return <option key={category} value={category}>{category}</option>;
+            })}
           </select>
         </div>
+
         <div className="filter-group">
           <label>
-            <input type="checkbox" checked={showInStockOnly} onChange={e => setShowInStockOnly(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={showInStockOnly}
+              onChange={function (e) { setShowInStockOnly(e.target.checked); }}
+            />
             In Stock Only
           </label>
         </div>
@@ -59,32 +102,36 @@ const Home = () => {
       <div className="products-grid">
         {filteredProducts.length === 0 ? (
           <p className="no-products">No products found</p>
-        ) : filteredProducts.map(product => (
-          <div key={product._id} className="product-card">
-            <img src={product.imageUrl} alt={product.name} />
-            <div className="product-info">
-              <h3>{product.name}</h3>
-              <p className="category">{product.category}</p>
-              <p className="description">{product.description}</p>
-              <div className="product-footer">
-                <div className="price">
-                  <span className="amount">Rs. {product.price}</span>
-                  <span className="unit">/{product.unit}</span>
+        ) : (
+          filteredProducts.map(function (product) {
+            return (
+              <div key={product._id} className="product-card">
+                <img src={product.imageUrl} alt={product.name} />
+                <div className="product-info">
+                  <h3>{product.name}</h3>
+                  <p className="category">{product.category}</p>
+                  <p className="description">{product.description}</p>
+                  <div className="product-footer">
+                    <div className="price">
+                      <span className="amount">Rs. {product.price}</span>
+                      <span className="unit">/{product.unit}</span>
+                    </div>
+                    <button
+                      onClick={function () { handleAddToCart(product); }}
+                      disabled={!product.stockStatus}
+                      className={product.stockStatus ? 'btn-primary' : 'btn-disabled'}
+                    >
+                      {product.stockStatus ? 'Add to Cart' : 'Out of Stock'}
+                    </button>
+                  </div>
                 </div>
-                <button
-                  onClick={() => handleAddToCart(product)}
-                  disabled={!product.stockStatus}
-                  className={product.stockStatus ? 'btn-primary' : 'btn-disabled'}
-                >
-                  {product.stockStatus ? 'Add to Cart' : 'Out of Stock'}
-                </button>
               </div>
-            </div>
-          </div>
-        ))}
+            );
+          })
+        )}
       </div>
     </div>
   );
-};
+}
 
 export default Home;

@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-const AdminRoute = ({ children }) => {
-  const { user, isAdmin, loading } = useContext(AuthContext);
+function AdminRoute({ children }) {
+  const { user, loading, isAdmin } = useContext(AuthContext);
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -13,7 +13,11 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
-  return isAdmin() ? children : <Navigate to="/" />;
-};
+  if (!isAdmin()) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
+}
 
 export default AdminRoute;

@@ -4,43 +4,69 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import './Auth.css';
 
-const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const { data } = await axios.post('/api/auth/login', formData);
-      login(data.token, data.user);
-      navigate(data.user.role === 'admin' ? '/admin/dashboard' : '/');
+      const response = await axios.post('/api/auth/login', {
+        email: email,
+        password: password
+      });
+
+      login(response.data.token, response.data.user);
+
+      if (response.data.user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
       setLoading(false);
     }
-  };
+  }
 
   return (
     <div className="auth-container">
       <div className="auth-card">
         <h2>Login to Fruit mStore</h2>
+
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email</label>
-            <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required placeholder="Enter your email" />
+            <input
+              type="email"
+              value={email}
+              onChange={function (e) { setEmail(e.target.value); }}
+              required
+              placeholder="Enter your email"
+            />
           </div>
+
           <div className="form-group">
             <label>Password</label>
-            <input type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} required placeholder="Enter your password" />
+            <input
+              type="password"
+              value={password}
+              onChange={function (e) { setPassword(e.target.value); }}
+              required
+              placeholder="Enter your password"
+            />
           </div>
+
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </button>
@@ -58,6 +84,6 @@ const Login = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Login;

@@ -3,17 +3,19 @@ import axios from 'axios';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useEffect(function () {
     if (token) {
       localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      const userData = JSON.parse(localStorage.getItem('user'));
-      setUser(userData);
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
     } else {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -22,26 +24,26 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [token]);
 
-  const login = (token, userData) => {
-    setToken(token);
+  function login(newToken, userData) {
+    setToken(newToken);
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
-  };
+  }
 
-  const logout = () => {
+  function logout() {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-  };
+  }
 
-  const isAdmin = () => {
-    return user?.role === 'admin';
-  };
+  function isAdmin() {
+    return user && user.role === 'admin';
+  }
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, isAdmin, loading }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}

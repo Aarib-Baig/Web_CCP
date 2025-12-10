@@ -1,4 +1,3 @@
-// Run this once to create demo data: node seed.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
@@ -11,7 +10,6 @@ const seedDatabase = async () => {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to MongoDB');
 
-        // Create demo users
         const users = [
             { name: 'Admin User', email: 'admin@fruitmstore.com', password: await bcrypt.hash('admin123', 10), phone: '03001234567', role: 'admin' },
             { name: 'Test Customer', email: 'customer@test.com', password: await bcrypt.hash('customer123', 10), phone: '03009876543', role: 'customer' }
@@ -24,7 +22,6 @@ const seedDatabase = async () => {
             }
         }
 
-        // Create sample products
         const products = [
             { name: 'Fresh Apples', category: 'Fruits', price: 250, unit: 'kg', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300', description: 'Crispy red apples' },
             { name: 'Bananas', category: 'Fruits', price: 120, unit: 'dozen', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300', description: 'Fresh yellow bananas' },
@@ -43,8 +40,6 @@ const seedDatabase = async () => {
             }
         }
 
-        console.log('\n✅ Database seeded successfully!');
-        console.log('\nDemo credentials:');
         console.log('Admin: admin@fruitmstore.com / admin123');
         console.log('Customer: customer@test.com / customer123');
 
