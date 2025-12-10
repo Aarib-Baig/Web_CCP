@@ -78,7 +78,7 @@ function Login() {
 
         <div className="demo-credentials">
           <p><strong>Demo Credentials:</strong></p>
-          <p>Admin: admin@fruitmstore.com / admin123</p>
+          <p>Admin: admin@fruitvegetablestore.com / admin123</p>
           <p>Customer: customer@test.com / customer123</p>
         </div>
       </div>

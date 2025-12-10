@@ -138,7 +138,7 @@ function Checkout() {
                     checked={paymentMethod === 'Online Payment'}
                     onChange={function (e) { setPaymentMethod(e.target.value); }}
                   />
-                  <span>Online Payment (Mock)</span>
+                  <span>Online Payment (Test)</span>
                 </label>
               </div>
             </div>

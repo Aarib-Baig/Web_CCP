@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 import './Home.css';
 
 function Home() {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showInStockOnly, setShowInStockOnly] = useState(false);
@@ -55,6 +59,11 @@ function Home() {
     if (!product.stockStatus) {
       alert('This product is out of stock');
       return;
+    }
+    if(!user){
+      alert('Please login to add to cart');
+      navigate('/login');
+      return
     }
     addToCart(product);
     alert(product.name + ' added to cart!');

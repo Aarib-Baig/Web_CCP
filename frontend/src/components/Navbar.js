@@ -62,9 +62,11 @@ function Navbar() {
           )}
 
           <li className="nav-item">
-            <Link to="/cart" className="nav-link cart-link">
-              Cart ({getCartCount()})
-            </Link>
+            {user && (
+              <Link to="/cart" className="nav-link cart-link">
+                Cart ({getCartCount()})
+              </Link>
+            )}
           </li>
         </ul>
       </div>
