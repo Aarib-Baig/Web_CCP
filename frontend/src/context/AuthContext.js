@@ -22,6 +22,7 @@ export function AuthProvider({ children }) {
       }
     );
 
+
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
