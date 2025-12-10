@@ -11,7 +11,7 @@ const seedDatabase = async () => {
         console.log('Connected to MongoDB');
 
         const users = [
-            { name: 'Admin User', email: 'admin@fruitmstore.com', password: await bcrypt.hash('admin123', 10), phone: '03001234567', role: 'admin' },
+            { name: 'Admin User', email: 'admin@fruitvegetablestore.com', password: await bcrypt.hash('admin123', 10), phone: '03001234567', role: 'admin' },
             { name: 'Test Customer', email: 'customer@test.com', password: await bcrypt.hash('customer123', 10), phone: '03009876543', role: 'customer' }
         ];
 
@@ -27,10 +27,7 @@ const seedDatabase = async () => {
             { name: 'Bananas', category: 'Fruits', price: 120, unit: 'dozen', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300', description: 'Fresh yellow bananas' },
             { name: 'Oranges', category: 'Fruits', price: 180, unit: 'kg', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1547514701-42782101795e?w=300', description: 'Juicy oranges' },
             { name: 'Mangoes', category: 'Fruits', price: 350, unit: 'kg', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=300', description: 'Sweet mangoes' },
-            { name: 'Tomatoes', category: 'Vegetables', price: 80, unit: 'kg', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1546470427-227c7369a9b0?w=300', description: 'Fresh red tomatoes' },
-            { name: 'Potatoes', category: 'Vegetables', price: 60, unit: 'kg', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1518977676601-b53f82ber51?w=300', description: 'Quality potatoes' },
             { name: 'Onions', category: 'Vegetables', price: 70, unit: 'kg', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300', description: 'Fresh onions' },
-            { name: 'Fresh Milk', category: 'Dairy', price: 180, unit: 'piece', stockStatus: true, imageUrl: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300', description: '1 Liter fresh milk' },
         ];
 
         for (const product of products) {
@@ -40,7 +37,7 @@ const seedDatabase = async () => {
             }
         }
 
-        console.log('Admin: admin@fruitmstore.com / admin123');
+        console.log('Admin: admin@fruitvegetablestore.com / admin123');
         console.log('Customer: customer@test.com / customer123');
 
         await mongoose.disconnect();

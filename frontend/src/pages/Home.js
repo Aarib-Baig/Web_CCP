@@ -70,8 +70,8 @@ function Home() {
   return (
     <div className="home">
       <div className="hero">
-        <h1>Welcome to Fruit mStore</h1>
-        <p>Fresh produce delivered to your doorstep</p>
+        <h1>Welcome to Fruits and Vegetables Store</h1>
+        <p>Fresh produce delivered straight to your doorstep</p>
       </div>
 
       <div className="filters">

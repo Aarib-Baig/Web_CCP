@@ -18,7 +18,7 @@ function Navbar() {
     <nav className="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
-          🍎 Fruit mStore
+          Fruits and Vegetables Store
         </Link>
 
         <ul className="nav-menu">
@@ -43,9 +43,6 @@ function Navbar() {
                 </>
               )}
 
-              <li className="nav-item">
-                <span className="nav-link user-name">Hi, {user.name}</span>
-              </li>
 
               <li className="nav-item">
                 <button onClick={handleLogout} className="nav-link logout-btn">
@@ -66,7 +63,7 @@ function Navbar() {
 
           <li className="nav-item">
             <Link to="/cart" className="nav-link cart-link">
-              🛒 Cart ({getCartCount()})
+              Cart ({getCartCount()})
             </Link>
           </li>
         </ul>

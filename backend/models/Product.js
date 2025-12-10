@@ -9,7 +9,7 @@ const ProductSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Fruits', 'Vegetables', 'Herbs', 'Dairy', 'Others']
+    enum: ['Fruits', 'Vegetables']
   },
   price: {
     type: Number,
@@ -19,7 +19,7 @@ const ProductSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ['kg', 'piece', 'dozen', 'bunch']
+    enum: ['kg', 'bunch']
   },
   stockStatus: {
     type: Boolean,

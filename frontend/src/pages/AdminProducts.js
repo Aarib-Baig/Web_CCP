@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AdminProducts.css';
 
-const CATEGORIES = ['Fruits', 'Vegetables', 'Herbs', 'Dairy', 'Others'];
+const CATEGORIES = ['Fruits', 'Vegetables'];
 const UNITS = [
   { value: 'kg', label: 'Kilogram (kg)' },
-  { value: 'piece', label: 'Piece' },
-  { value: 'dozen', label: 'Dozen' },
   { value: 'bunch', label: 'Bunch' }
 ];
 
