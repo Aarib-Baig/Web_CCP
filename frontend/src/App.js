@@ -27,38 +27,10 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/cart" element={<Cart />} />
-              <Route 
-                path="/checkout" 
-                element={
-                  <PrivateRoute>
-                    <Checkout />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/orders" 
-                element={
-                  <PrivateRoute>
-                    <Orders />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/admin/dashboard" 
-                element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                } 
-              />
-              <Route 
-                path="/admin/products" 
-                element={
-                  <AdminRoute>
-                    <AdminProducts />
-                  </AdminRoute>
-                } 
-              />
+              <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+              <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
+              <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+              <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>

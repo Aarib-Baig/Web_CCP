@@ -5,19 +5,11 @@ import { AuthContext } from '../context/AuthContext';
 import './Auth.css';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,14 +17,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('/api/auth/login', formData);
-      login(res.data.token, res.data.user);
-      
-      if (res.data.user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/');
-      }
+      const { data } = await axios.post('/api/auth/login', formData);
+      login(data.token, data.user);
+      navigate(data.user.role === 'admin' ? '/admin/dashboard' : '/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
       setLoading(false);
@@ -43,34 +30,17 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Login to Fruit mStore</h2>
-        
         {error && <div className="error-message">{error}</div>}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-            />
+            <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required placeholder="Enter your email" />
           </div>
-
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-            />
+            <input type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} required placeholder="Enter your password" />
           </div>
-
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </button>

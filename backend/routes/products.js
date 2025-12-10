@@ -1,17 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { body, validationResult } = require('express-validator');
 const Product = require('../models/Product');
 const { auth, adminOnly } = require('../middleware/auth');
 
-// @route   GET /api/products
-// @desc    Get all products
-// @access  Public
+// GET /api/products - Get all products (with optional filters)
 router.get('/', async (req, res) => {
   try {
     const { category, inStock } = req.query;
-    
-    let filter = {};
+    const filter = {};
     if (category) filter.category = category;
     if (inStock === 'true') filter.stockStatus = true;
 
@@ -23,15 +19,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-// @route   GET /api/products/:id
-// @desc    Get single product
-// @access  Public
+// GET /api/products/:id - Get single product
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
+    if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json(product);
   } catch (error) {
     console.error(error);
@@ -39,34 +31,17 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// @route   POST /api/products
-// @desc    Add new product
-// @access  Admin only
-router.post('/', [auth, adminOnly], [
-  body('name').notEmpty().withMessage('Product name is required'),
-  body('category').notEmpty().withMessage('Category is required'),
-  body('price').isNumeric().withMessage('Price must be a number'),
-  body('unit').notEmpty().withMessage('Unit is required')
-], async (req, res) => {
+// POST /api/products - Add new product (Admin only)
+router.post('/', [auth, adminOnly], async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    const { name, category, price, unit } = req.body;
+
+    // Simple validation
+    if (!name || !category || price === undefined || !unit) {
+      return res.status(400).json({ message: 'Name, category, price, and unit are required' });
     }
 
-    const { name, category, price, unit, stockStatus, imageUrl, description } = req.body;
-
-    const product = new Product({
-      name,
-      category,
-      price,
-      unit,
-      stockStatus,
-      imageUrl,
-      description
-    });
-
-    await product.save();
+    const product = await Product.create(req.body);
     res.status(201).json(product);
   } catch (error) {
     console.error(error);
@@ -74,27 +49,15 @@ router.post('/', [auth, adminOnly], [
   }
 });
 
-// @route   PUT /api/products/:id
-// @desc    Update product
-// @access  Admin only
+// PUT /api/products/:id - Update product (Admin only)
 router.put('/:id', [auth, adminOnly], async (req, res) => {
   try {
-    const { name, category, price, unit, stockStatus, imageUrl, description } = req.body;
-
-    let product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    product.name = name || product.name;
-    product.category = category || product.category;
-    product.price = price !== undefined ? price : product.price;
-    product.unit = unit || product.unit;
-    product.stockStatus = stockStatus !== undefined ? stockStatus : product.stockStatus;
-    product.imageUrl = imageUrl || product.imageUrl;
-    product.description = description || product.description;
-
-    await product.save();
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json(product);
   } catch (error) {
     console.error(error);
@@ -102,17 +65,11 @@ router.put('/:id', [auth, adminOnly], async (req, res) => {
   }
 });
 
-// @route   DELETE /api/products/:id
-// @desc    Delete product
-// @access  Admin only
+// DELETE /api/products/:id - Delete product (Admin only)
 router.delete('/:id', [auth, adminOnly], async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json({ message: 'Product deleted' });
   } catch (error) {
     console.error(error);
