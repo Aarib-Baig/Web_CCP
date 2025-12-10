@@ -9,32 +9,44 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(function () {
-    if (token) {
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
+    const interceptor = axios.interceptors.request.use(
+      function (config) {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+          config.headers.Authorization = 'Bearer ' + storedToken;
+        }
+        return config;
+      },
+      function (error) {
+        return Promise.reject(error);
       }
-    } else {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      delete axios.defaults.headers.common['Authorization'];
+    );
+
+    // Initialize state
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
     setLoading(false);
-  }, [token]);
+
+    // Cleanup interceptor on unmount
+    return function () {
+      axios.interceptors.request.eject(interceptor);
+    };
+  }, []);
 
   function login(newToken, userData) {
+    localStorage.setItem('token', newToken);
+    localStorage.setItem('user', JSON.stringify(userData));
     setToken(newToken);
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
   }
 
   function logout() {
-    setToken(null);
-    setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
   }
 
   function isAdmin() {

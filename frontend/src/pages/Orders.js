@@ -14,7 +14,8 @@ function Orders() {
         setLoading(false);
       })
       .catch(function (err) {
-        setError('Failed to fetch orders');
+        console.error("Orders fetch error:", err);
+        setError(err.response?.data?.message || 'Failed to fetch orders');
         setLoading(false);
       });
   }, []);

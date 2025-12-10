@@ -76,13 +76,11 @@ export function CartProvider({ children }) {
   }
 
   function getCartCount() {
-    setTimeout(function () {
-      let count = 0;
-      for (let i = 0; i < cart.length; i++) {
-        count = count + cart[i].quantity;
-      }
-      return count;
-    }, 100);
+    let count = 0;
+    for (let i = 0; i < cart.length; i++) {
+      count = count + cart[i].quantity;
+    }
+    return count;
   }
 
   return (
