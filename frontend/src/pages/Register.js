@@ -45,7 +45,7 @@ function Register() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Register for Fruit mStore</h2>
+        <h2>Register for Fruit and Vegetable Store</h2>
 
         {error && <div className="error-message">{error}</div>}
 
